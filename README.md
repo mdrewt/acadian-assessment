@@ -38,8 +38,8 @@ Run `just setup` in the root of the project, the `just` taskrunner will run the 
 
 * [x] Initialize Git repository with a rough `README.md` that outlines the project.
 * [ ] Set up the project's file structure and initialize a `Hello World` version of the applications.
-  * [ ] Frontend spun up with Vite, Typescript, and React.
-  * [ ] Setup, Dev, and Deployment script wired up for the frontend.
+  * [x] Frontend spun up with Vite, Typescript, and React.
+  * [x] Setup, Dev, and Deployment script wired up for the frontend.
   * [ ] Backend spun up with Python, FastAPI, and Pydantic.
   * [ ] Setup, Dev, and Deployment script wired up for the backend.
 * [ ] Install and setup the `yfinance` python module.
