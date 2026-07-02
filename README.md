@@ -5,7 +5,7 @@ This application is a simple full-stack app to visualize daily returns of the MA
 ---
 ## Architecture
 
-This repository will be structured as a multilangiage monorepo using `just` as the root level task runner.
+This repository will be structured as a multilanguage monorepo using `just` as the root level task runner.
 
 ```markdown
 - `apps/`          # Final applications with deployable code
@@ -22,10 +22,10 @@ This repository will be structured as a multilangiage monorepo using `just` as t
 Requirements:
 * Node Version >= 24.18.*
 * Python version >= 3.14.*
-* just version >= 1.21.*
+* just version >= 1.55.*
 
 Use you preferred version manager(s) (I like `asdf`) to install the appropriate versions of Node and Python, then install `just` via one of the following methods:
-* masOC: `brew install just`
+* macOS: `brew install just`
 * Linux: `sudo apt install just`
 * Windows: `winget install casey.just` (Requires the `sh` shell provided by `Git for Windows`, `GitHub Desktop`, or `Cygwin`)
 
@@ -37,11 +37,11 @@ Run `just setup` in the root of the project, the `just` taskrunner will run the 
 ## TODOs List
 
 * [x] Initialize Git repository with a rough `README.md` that outlines the project.
-* [ ] Set up the project's file structure and initialize a `Hello World` version of the applications.
-  * [ ] Frontend spun up with Vite, Typescript, and React.
-  * [ ] Setup, Dev, and Deployment script wired up for the frontend.
-  * [ ] Backend spun up with Python, FastAPI, and Pydantic.
-  * [ ] Setup, Dev, and Deployment script wired up for the backend.
+* [x] Set up the project's file structure and initialize a `Hello World` version of the applications.
+  * [x] Frontend spun up with Vite, Typescript, and React.
+  * [x] Setup, Dev, and Deployment script wired up for the frontend.
+  * [x] Backend spun up with Python, FastAPI, and Pydantic.
+  * [x] Setup, Dev, and Deployment script wired up for the backend.
 * [ ] Install and setup the `yfinance` python module.
   * [ ] Ensure it can fetch the information required to calculate daily returns.
   * [ ] Create pydantic types for the fetched data.
