@@ -43,7 +43,7 @@ Run `just setup` in the root of the project, the `just` taskrunner will run the 
   * [x] Backend spun up with Python, FastAPI, and Pydantic.
   * [x] Setup, Dev, and Deployment script wired up for the backend.
 * [ ] Install and setup the `yfinance` python module.
-  * [ ] Ensure it can fetch the information required to calculate daily returns.
+  * [x] Ensure it can fetch the information required to calculate daily returns.
   * [ ] Create pydantic types for the fetched data.
   * [ ] Build unit tests for for the yfinance service with mock data.
 * [ ] Setup an endpoint to fetch the daily returns of the MAG7 symbols.
