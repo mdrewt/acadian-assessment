@@ -1,7 +1,9 @@
 # Small in-memory cache for computed return payloads.
 #
-# Results are keyed by the requested (start, end) range. A range that has already ended is cached for a day; a range that still includes today only lives
-# for a few minutes, since those prices are still moving. Entries expire on read, and when the cache is full the entry that expires soonest is dropped.
+# Results are keyed by the requested (start, end) range. A range that has
+# already ended is cached for a day; a range that still includes today only
+# lives for a few minutes, since those prices are still moving. Entries expire
+# on read, and when the cache is full the entry that expires soonest is dropped.
 #
 # The clock is passed in so the expiry logic can be tested without waiting on real time.
 

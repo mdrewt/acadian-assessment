@@ -1,7 +1,8 @@
 # Application errors and the FastAPI handler that turns them into JSON.
 #
-# Raising one of these anywhere in the service layer produces a consistent error envelope (see schemas.ErrorResponse) with the right status code,
-# so the routing code doesn't have to translate errors itself.
+# Raising one of these anywhere in the service layer produces a consistent error
+# envelope (see schemas.ErrorResponse) with the right status code, so the
+# routing code doesn't have to translate errors itself.
 
 from __future__ import annotations
 

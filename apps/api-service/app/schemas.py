@@ -12,8 +12,10 @@ class ReturnPoint(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
     date: datetime.date = Field(description="Trading day, formatted YYYY-MM-DD.")
+    # `return` is a reserved word in Python, so the field is named `daily_return`
+    # and serialises to/from the JSON key `return` via an alias.
     daily_return: float = Field(
-        alias="return",  # return is a reserved word in Python, so the field is named `daily_return` and serialises to/from the JSON key `return` via an alias.
+        alias="return",
         description="Daily return as a fraction, close-over-previous-close.",
     )
 

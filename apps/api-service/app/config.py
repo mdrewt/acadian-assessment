@@ -1,6 +1,7 @@
 # Runtime configuration.
 #
-# Values come from API_-prefixed environment variables, then an optional .env file, then the defaults below. get_settings() is cached so the app shares one
+# Values come from API_-prefixed environment variables, then an optional .env
+# file, then the defaults below. get_settings() is cached so the app shares one
 # Settings instance.
 
 from __future__ import annotations

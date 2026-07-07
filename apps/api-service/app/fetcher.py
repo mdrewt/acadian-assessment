@@ -1,4 +1,5 @@
-# A wrapper around yfinance that fetches and normalises adjusted close prices for a list of tickers over a date range.
+# A wrapper around yfinance that fetches and normalises adjusted close prices
+# for a list of tickers over a date range.
 
 from __future__ import annotations
 
@@ -12,8 +13,9 @@ from .config import get_settings
 from .exceptions import DataFetchError
 
 
-# The only function here that hits the network. yfinance treats `end` as exclusive, and callers already pass an exclusive end date.
-# auto_adjust=True gives split/dividend-adjusted closes, which is the right basis for returns.
+# The only function here that hits the network. yfinance treats `end` as
+# exclusive, and callers already pass an exclusive end date. auto_adjust=True
+# gives split/dividend-adjusted closes, which is the right basis for returns.
 def _download_prices(tickers: Sequence[str], start: date, end: date) -> pd.DataFrame:
     settings = get_settings()
     return yf.download(
@@ -58,7 +60,8 @@ def normalize_close_prices(raw: pd.DataFrame | None, tickers: Sequence[str]) -> 
 
 
 # Fetch and normalise adjusted close prices.
-# Any upstream error is wrapped in DataFetchError so the API returns a 502 instead of leaking a provider-specific exception.
+# Any upstream error is wrapped in DataFetchError so the API returns a 502
+# instead of leaking a provider-specific exception.
 def fetch_close_prices(tickers: Sequence[str], start: date, end: date) -> pd.DataFrame:
     try:
         raw = _download_prices(tickers, start, end)

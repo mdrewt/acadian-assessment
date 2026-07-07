@@ -11,7 +11,10 @@ from .exceptions import register_exception_handlers
 from .routers import returns
 from .service import ReturnsService
 
-DESCRIPTION = "Daily percentage returns for the Magnificent Seven (MAG7) stocks, sourced from Yahoo Finance and computed with pandas."
+DESCRIPTION = (
+    "Daily percentage returns for the Magnificent Seven (MAG7) stocks, "
+    "sourced from Yahoo Finance and computed with pandas."
+)
 
 
 # Build and configure the FastAPI application.

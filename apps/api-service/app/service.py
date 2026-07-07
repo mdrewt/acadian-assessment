@@ -1,6 +1,7 @@
 # The /returns use case: validate, check the cache, fetch, compute, cache.
 #
-# The fetch function, clock, and "today" are injectable so the whole flow can be run in tests without hitting the network or the wall clock.
+# The fetch function, clock, and "today" are injectable so the whole flow can be
+# run in tests without hitting the network or the wall clock.
 
 from __future__ import annotations
 

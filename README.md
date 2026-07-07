@@ -5,7 +5,7 @@ This application is a simple full-stack app to visualize daily returns of the MA
 ---
 ## Architecture
 
-This repository will be structured as a multilanguage monorepo using `just` as the root level task runner and npm workspaces handle the TypeScript packages. The backend defines the API. Its OpenAPI schema is used to generate the SDK and the frontend imports that SDK instead of hand-writing types or URLs.
+This repository is a multilanguage monorepo: `just` is the root-level task runner and npm workspaces handle the TypeScript packages. The backend defines the API. Its OpenAPI schema is used to generate the SDK, and the frontend imports that SDK instead of hand-writing types or URLs.
 
 ```markdown
 - `.github/`         # CI workflow
@@ -78,7 +78,7 @@ The assessment left some things open, so for the record:
     * [x] Line chart of daily returns for a given ticker
     * [x] Allows zooming and tooltip inspection
     * [x] Displays basic summary stats (min, max, mean).
-      * [x] Question: Geometric mean or arithmatic mean? For a hypothetical set of daily returns like [-0.5, 0.5] (50% loss and a 50% gain), the arithmatic mean is 0, but the geometric mean is -0.25 (a 25% loss because `[1 - 0.5] * [1 + 0.5] - 1 = -0.25`). I'm assuming that the geometric mean is preferred.
+      * [x] Question: what should "mean" be? A plain arithmetic mean of daily returns hides compounding: `[-0.5, 0.5]` averages to 0%, but the round trip is actually a 25% loss (`(1 - 0.5) * (1 + 0.5) - 1 = -0.25`). Decision: show the arithmetic mean as "Mean" and report the compounded total (`prod(1 + r) - 1`) as a separate "Total" column, so neither figure misleads. Volatility (sample std. dev.) rounds out the summary.
   * [x] Ensure the frontend handles errors gracefully.
 * [x] Use `tailwind` to create a responsive grid UI and make everything look nice.
   

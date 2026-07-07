@@ -1,7 +1,9 @@
 # Daily-return math, kept free of I/O so it's easy to test with small frames.
-# A daily return is the close-over-previous-close change: r_t = (close_t - close_{t-1}) / close_{t-1}
-# The first trading day in a window gets its return from a prior close, which the service fetches as a short lookback;
-# build_returns_payload then trims back tothe requested [start, end].
+# A daily return is the close-over-previous-close change:
+#   r_t = (close_t - close_{t-1}) / close_{t-1}
+# The first trading day in a window gets its return from a prior close, which the
+# service fetches as a short lookback; build_returns_payload then trims back to
+# the requested [start, end].
 
 from __future__ import annotations
 
@@ -25,14 +27,16 @@ def compute_daily_returns(close_prices: pd.DataFrame) -> pd.DataFrame:
 
 
 # Trim returns to [start, end] and shape the response.
-# Days without a return (leading NaN or missing data) are left out of a ticker's series, but every requested ticker is still present as a key.
+# Days without a return (leading NaN or missing data) are left out of a ticker's
+# series, but every requested ticker is still present as a key.
 def build_returns_payload(
     returns: pd.DataFrame,
     start: date,
     end: date,
     tickers: Sequence[str],
 ) -> dict[str, list[ReturnPoint]]:
-    # Nothing came back: every ticker maps to an empty series. This also avoids comparing an empty, non-datetime index against a Timestamp below.
+    # Nothing came back: every ticker maps to an empty series. This also avoids
+    # comparing an empty, non-datetime index against a Timestamp below.
     if returns.empty:
         return {ticker: [] for ticker in tickers}
 
