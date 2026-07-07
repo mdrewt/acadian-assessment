@@ -1,0 +1,21 @@
+{
+  "name": "acadian-assessment",
+  "version": "1.0.0",
+  "description": "Full-stack app visualizing daily returns of the MAG7 stocks.",
+  "private": true,
+  "author": "Michael Drew Teter",
+  "license": "MIT",
+  "type": "module",
+  "workspaces": [
+    "libs/sdk",
+    "apps/web-client"
+  ],
+  "scripts": {
+    "build:sdk": "npm run build --workspace @acadian/sdk",
+    "generate:sdk": "npm run generate --workspace @acadian/sdk",
+    "build:web": "npm run build --workspace @acadian/web-client",
+    "dev:web": "npm run dev --workspace @acadian/web-client",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present"
+  }
+}

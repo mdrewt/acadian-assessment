@@ -1,0 +1,134 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "MAG7 Returns API",
+    "description": "Daily percentage returns for the Magnificent Seven (MAG7) stocks, sourced from Yahoo Finance and computed with pandas.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/returns": {
+      "get": {
+        "tags": [
+          "returns"
+        ],
+        "summary": "Daily returns for the MAG7 stocks",
+        "operationId": "getReturns",
+        "parameters": [
+          {
+            "name": "start",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "description": "Start of the range (inclusive), formatted YYYY-MM-DD.",
+              "title": "Start"
+            },
+            "description": "Start of the range (inclusive), formatted YYYY-MM-DD."
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "description": "End of the range (inclusive), formatted YYYY-MM-DD.",
+              "title": "End"
+            },
+            "description": "End of the range (inclusive), formatted YYYY-MM-DD."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ReturnPoint"
+                    }
+                  },
+                  "title": "Response Getreturns"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid date range",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Malformed query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Upstream data provider error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ErrorResponse": {
+        "properties": {
+          "detail": {
+            "type": "string",
+            "title": "Detail",
+            "description": "Human-readable description of the error."
+          }
+        },
+        "type": "object",
+        "required": [
+          "detail"
+        ],
+        "title": "ErrorResponse",
+        "description": "Consistent error envelope returned for 4xx/5xx responses."
+      },
+      "ReturnPoint": {
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date",
+            "description": "Trading day, formatted YYYY-MM-DD."
+          },
+          "return": {
+            "type": "number",
+            "title": "Return",
+            "description": "Daily return as a fraction, close-over-previous-close."
+          }
+        },
+        "type": "object",
+        "required": [
+          "date",
+          "return"
+        ],
+        "title": "ReturnPoint"
+      }
+    }
+  }
+}

@@ -56,7 +56,7 @@ Run `just setup` in the root of the project, the `just` taskrunner will run the 
     * [x] Build tests for calculation module first (TDD).
     * [x] Question: What should we use as the start/end values for each day? The NYSE opening/closing prices, prices at midnight of each day, or closing price vs previous day's closing price? Should we only count business days and exclude weekends + NYSE holidays?
   * [x] Ensure the backend handles errors gracefully.
-* [ ] Take the API's swagger (openAPI) docs and build a type-aware SDK that the frontend can use.
+* [x] Take the API's swagger (openAPI) docs and build a type-aware SDK that the frontend can use.
 * [ ] Create a React component that displays a line chart of daily returns over time.
   * [ ] Ccreated the component and wired up to the redux data store.
   * [ ] Added date pickers for setting the start and end dates.

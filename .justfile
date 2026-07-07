@@ -14,8 +14,17 @@ openapi_json := sdk_dir / "openapi.json"
 default:
     @just --list
 
-# Setup the development environment by installing all required dependencies for both the frontend web client and the backend API service.
-setup: install-py
+# ----------------------------------------------------------------------------
+# Setup
+# ----------------------------------------------------------------------------
+
+# Install all dependencies (JS workspaces + Python venv) and build the SDK.
+setup: install-js install-py build-sdk
+    @echo
+    @echo "Setup complete. Run 'just develop' to start the app."
+
+# Install the frontend + SDK workspaces from the repo root.
+install-js:
   @echo "--------------------------------------------------"
   @echo "Installing NPM packages for the frontend web client"
   @echo "--------------------------------------------------"
@@ -28,12 +37,24 @@ install-py:
     "{{venv_bin}}/python" -m pip install --quiet --upgrade pip
     "{{venv_bin}}/pip" install --quiet -r "{{api_dir}}/requirements.txt" -r "{{api_dir}}/requirements-dev.txt"
 
-# Generate the SDK from the backend OpenAPI specification and bundle the frontend web client for deployment.
-build-sdk:
-  @echo "--------------------------------------------------"
-  @echo "Building SDK from the backend OpenAPI specification"
-  @echo "--------------------------------------------------"
-  @echo "\nTODO: Install and run an OpenAPI Generator to build the SDK"
+# ----------------------------------------------------------------------------
+# SDK
+# ----------------------------------------------------------------------------
+
+# Export the backend OpenAPI schema to libs/sdk/openapi.json (no server needed).
+openapi:
+    @echo "==> Exporting OpenAPI schema"
+    "{{venv_bin}}/python" "{{api_dir}}/scripts/export_openapi.py" "{{openapi_json}}"
+
+# Regenerate the typed SDK from the OpenAPI schema and compile it.
+build-sdk: openapi
+    @echo "==> Generating and building the SDK"
+    npm run generate --workspace @acadian/sdk
+    npm run build --workspace @acadian/sdk
+
+# ----------------------------------------------------------------------------
+# Build
+# ----------------------------------------------------------------------------
 
 build-web: build-sdk
   @echo "--------------------------------------------------"
