@@ -20,6 +20,7 @@ from .schemas import ReturnsResponse
 # (tickers, start, end) -> wide close-price frame. Swapped for synthetic data in tests.
 FetchFn = Callable[[list[str], date, date], pd.DataFrame]
 
+
 # Compute and cache MAG7 daily returns for a date range.
 class ReturnsService:
     def __init__(

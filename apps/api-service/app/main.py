@@ -13,6 +13,7 @@ from .service import ReturnsService
 
 DESCRIPTION = "Daily percentage returns for the Magnificent Seven (MAG7) stocks, sourced from Yahoo Finance and computed with pandas."
 
+
 # Build and configure the FastAPI application.
 def create_app(settings: Settings | None = None) -> FastAPI:
     settings = settings or get_settings()

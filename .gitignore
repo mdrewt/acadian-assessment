@@ -148,4 +148,5 @@ vite.config.ts.timestamp-*
 # Python files
 __pycache__/
 .pytest_cache/
+.ruff_cache/
 .coverage

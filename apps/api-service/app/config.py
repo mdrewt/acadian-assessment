@@ -52,7 +52,8 @@ class Settings(BaseSettings):
         "http://127.0.0.1:4173",
     )
 
-#The process-wide Settings instance (cached).
+
+# The process-wide Settings instance (cached).
 @lru_cache
 def get_settings() -> Settings:
     return Settings()

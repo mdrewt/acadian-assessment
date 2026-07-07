@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import datetime
+
 from pydantic import BaseModel, ConfigDict, Field
+
 
 # A single day's percentage return for one ticker.
 class ReturnPoint(BaseModel):
@@ -15,10 +17,12 @@ class ReturnPoint(BaseModel):
         description="Daily return as a fraction, close-over-previous-close.",
     )
 
+
 # The /returns payload is a plain object keyed by ticker symbol, each mapping
 # to that ticker's ordered list of daily returns, e.g.:
 #   {"AMZN": [{"date": "2024-01-02", "return": 0.007}, ...], "MSFT": [...]}
 ReturnsResponse = dict[str, list[ReturnPoint]]
+
 
 class ErrorResponse(BaseModel):
     """Consistent error envelope returned for 4xx/5xx responses."""

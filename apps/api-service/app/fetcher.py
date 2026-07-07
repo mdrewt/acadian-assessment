@@ -11,6 +11,7 @@ import yfinance as yf
 from .config import get_settings
 from .exceptions import DataFetchError
 
+
 # The only function here that hits the network. yfinance treats `end` as exclusive, and callers already pass an exclusive end date.
 # auto_adjust=True gives split/dividend-adjusted closes, which is the right basis for returns.
 def _download_prices(tickers: Sequence[str], start: date, end: date) -> pd.DataFrame:
@@ -26,6 +27,7 @@ def _download_prices(tickers: Sequence[str], start: date, end: date) -> pd.DataF
         threads=True,
         timeout=settings.fetch_timeout_seconds,
     )
+
 
 # Reduce yfinance's raw frame to a wide close-price frame.
 def normalize_close_prices(raw: pd.DataFrame | None, tickers: Sequence[str]) -> pd.DataFrame:
@@ -53,6 +55,7 @@ def normalize_close_prices(raw: pd.DataFrame | None, tickers: Sequence[str]) -> 
     close.index = pd.to_datetime(close.index).tz_localize(None).normalize()
     close = close.sort_index()
     return close.astype("float64")
+
 
 # Fetch and normalise adjusted close prices.
 # Any upstream error is wrapped in DataFetchError so the API returns a 502 instead of leaking a provider-specific exception.

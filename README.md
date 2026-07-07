@@ -5,15 +5,15 @@ This application is a simple full-stack app to visualize daily returns of the MA
 ---
 ## Architecture
 
-This repository will be structured as a multilanguage monorepo using `just` as the root level task runner.
+This repository will be structured as a multilanguage monorepo using `just` as the root level task runner and npm workspaces handle the TypeScript packages. The backend defines the API. Its OpenAPI schema is used to generate the SDK and the frontend imports that SDK instead of hand-writing types or URLs.
 
 ```markdown
+- `.github/`         # CI workflow
 - `apps/`          # Final applications with deployable code
   + `web-client/`  # React frontend (vite + typescript + react + redux toolkit)
   + `api-service/` # Backend API (FastAPI + Pydantic)
 - `libs/`          # Shared custom code and business logic
   + `sdk/`         # An sdk generated from the server's OpenAPI docs (swagger) for clients to use.
-- `packages/`      # Third-party dependencies and system scripts
 ```
 
 ---
@@ -31,7 +31,19 @@ Use you preferred version manager(s) (I like `asdf`) to install the appropriate 
 
 Learn more about `just` here: [Quick Start](https://just.systems/man/en/quick-start.html) | [Github](https://github.com/casey/just)
 
-Run `just setup` in the root of the project, the `just` taskrunner will run the inital setup scripts and install any required `npm` packages or `pip` modules. Then run `just deploy-all` to run everything locally, or `just develop` to deploy and run a watched instance of everything with live reload.
+Run `just setup` in the root of the project, the `just` taskrunner will run the inital setup scripts and install any required `npm` packages or `pip` modules. Then run `just develop` to deploy and run a watched instance of everything with live reload.
+Finally open http://localhost:5173. Interactive API docs are at http://localhost:8000/docs.
+
+---
+## A few decisions worth noting
+
+The assessment left some things open, so for the record:
+
+- A daily return here is the close-over-previous-close change, `(close_t - close_{t-1}) / close_{t-1}`. To get a return for the first day in the requested window, the backend fetches a few extra days before `start` and then trims back to `[start, end]`, so the first day still shows a real return against the previous session's close.
+- Prices are split/dividend-adjusted (`auto_adjust=True`), which is the right basis for computing returns.
+- For "mean" I show the arithmetic mean of the daily returns, alongside volatility (sample standard deviation) and a compounded total return (`prod(1 + r) - 1`). The compounded figure is there because a plain average hides the fact that +50% then -50% is actually a -25% round trip.
+- Results are cached in memory by `(start, end)`. A range that's entirely in the past won't change, so it's kept for a day; a range that includes today gets a short 10-minute TTL since those prices are still moving. Expired entries are dropped on read.
+- I didn't add any trading-calendar logic. yfinance only returns days that actually traded, so weekends and holidays simply aren't in the data.
 
 ---
 ## TODOs List
@@ -57,20 +69,18 @@ Run `just setup` in the root of the project, the `just` taskrunner will run the 
     * [x] Question: What should we use as the start/end values for each day? The NYSE opening/closing prices, prices at midnight of each day, or closing price vs previous day's closing price? Should we only count business days and exclude weekends + NYSE holidays?
   * [x] Ensure the backend handles errors gracefully.
 * [x] Take the API's swagger (openAPI) docs and build a type-aware SDK that the frontend can use.
-* [ ] Create a React component that displays a line chart of daily returns over time.
-  * [ ] Ccreated the component and wired up to the redux data store.
-  * [ ] Added date pickers for setting the start and end dates.
-  * [ ] Makes an API call to `/returns` for the daily returns.
-    * [ ] Import and use the backend's sdk.
-      * [ ] Potential Improvement: Cache responses for days already queried. (Must decide how the cache should be invalidated)
-      * [ ] Potential Improvement: When making multiple back-to-back date changes, cancel any pending promises, and only render the latest request.
-  * [ ] Use `recharts` to plot the returns of each ticker in MAG7.
-    * [ ] Line chart of daily returns for a given ticker
-    * [ ] Allows zooming and tooltip inspection
-    * [ ] Displays basic summary stats (min, max, mean).
-      * [ ] Question: Geometric mean or arithmatic mean? For a hypothetical set of daily returns like [-0.5, 0.5] (50% loss and a 50% gain), the arithmatic mean is 0, but the geometric mean is -0.25 (a 25% loss because `[1 - 0.5] * [1 + 0.5] - 1 = -0.25`). I'm assuming that the geometric mean is preferred.
-  * [ ] Ensure the frontend handles errors gracefully.
-* [ ] Use `tailwind` to create a responsive grid UI and make everything look nice.
+* [x] Create a React component that displays a line chart of daily returns over time.
+  * [x] Created the component and wired up to the redux data store.
+  * [x] Added date pickers for setting the start and end dates.
+  * [x] Makes an API call to `/returns` for the daily returns.
+    * [x] Import and use the backend's sdk.
+  * [x] Use `recharts` to plot the returns of each ticker in MAG7.
+    * [x] Line chart of daily returns for a given ticker
+    * [x] Allows zooming and tooltip inspection
+    * [x] Displays basic summary stats (min, max, mean).
+      * [x] Question: Geometric mean or arithmatic mean? For a hypothetical set of daily returns like [-0.5, 0.5] (50% loss and a 50% gain), the arithmatic mean is 0, but the geometric mean is -0.25 (a 25% loss because `[1 - 0.5] * [1 + 0.5] - 1 = -0.25`). I'm assuming that the geometric mean is preferred.
+  * [x] Ensure the frontend handles errors gracefully.
+* [x] Use `tailwind` to create a responsive grid UI and make everything look nice.
   
 
 

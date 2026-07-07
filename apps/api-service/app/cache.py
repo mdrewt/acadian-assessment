@@ -17,6 +17,7 @@ from .schemas import ReturnsResponse
 
 CacheKey = tuple[date, date]
 
+
 @dataclass(slots=True)
 class _Entry:
     value: ReturnsResponse
@@ -24,9 +25,7 @@ class _Entry:
 
 
 class ReturnsCache:
-    def __init__(
-        self, max_entries: int = 256, clock: Callable[[], float] = time.monotonic
-    ) -> None:
+    def __init__(self, max_entries: int = 256, clock: Callable[[], float] = time.monotonic) -> None:
         if max_entries < 1:
             raise ValueError("max_entries must be >= 1")
         self._entries: dict[CacheKey, _Entry] = {}

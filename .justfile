@@ -25,10 +25,8 @@ setup: install-js install-py build-sdk
 
 # Install the frontend + SDK workspaces from the repo root.
 install-js:
-  @echo "--------------------------------------------------"
-  @echo "Installing NPM packages for the frontend web client"
-  @echo "--------------------------------------------------"
-  @cd apps/web-client && npm install
+    @echo "==> Installing JS workspaces (web-client + sdk)"
+    npm install
 
 # Create the Python virtualenv (if needed) and install API dependencies.
 install-py:
@@ -56,57 +54,80 @@ build-sdk: openapi
 # Build
 # ----------------------------------------------------------------------------
 
+# Build the frontend for production (rebuilds the SDK first).
 build-web: build-sdk
-  @echo "--------------------------------------------------"
-  @echo "Bundling the frontend web client for Deployment"
-  @echo "--------------------------------------------------"
-  @cd apps/web-client && npm run build
+    @echo "==> Building the web client"
+    npm run build --workspace @acadian/web-client
 
-# Deploy both the API service and the web client in parallel with live-reload enabled for development purposes.
+# Build everything.
+build: build-sdk build-web
+
+# ----------------------------------------------------------------------------
+# Develop (live reload)
+# ----------------------------------------------------------------------------
+
+# Run the API and web client together with live reload.
 [parallel]
 develop: develop-api develop-web
 
 develop-api:
-  @echo "--------------------------------------------------"
-  @echo "Deploying the api service with live-reload enabled"
-  @echo "--------------------------------------------------"
-  @cd apps/api-service && fastapi dev main.py
+    @echo "==> API: http://localhost:8000 (docs at /docs)"
+    cd "{{api_dir}}" && .venv/bin/fastapi dev app/main.py
 
 develop-web: build-sdk
-  @echo "--------------------------------------------------"
-  @echo "Deploying the web client with live-reload enabled"
-  @echo "--------------------------------------------------"
-  @cd apps/web-client && npm run dev
+    @echo "==> Web: http://localhost:5173"
+    npm run dev --workspace @acadian/web-client
 
-# Deploy both the API service and the web client in parallel for production purposes.
+# ----------------------------------------------------------------------------
+# Deploy (production servers)
+# ----------------------------------------------------------------------------
+
 [parallel]
 deploy: deploy-api deploy-web
 
 deploy-api:
-  @echo "--------------------------------------------------"
-  @echo "Deploying the api service"
-  @echo "--------------------------------------------------"
-  @cd apps/api-service && fastapi run main.py
+    cd "{{api_dir}}" && .venv/bin/fastapi run app/main.py
 
 deploy-web: build-web
-  @echo "--------------------------------------------------"
-  @echo "Deploying the web client from the build artifacts"
-  @echo "--------------------------------------------------"
-  @echo "\nTODO: Replace 'dev' with actual deployment commands"
-  @cd apps/web-client && npm run dev
+    npm run preview --workspace @acadian/web-client
+
+# ----------------------------------------------------------------------------
+# Test / Lint / Format
+# ----------------------------------------------------------------------------
 
 # Run all test suites.
-test-all: test-api
+test-all: test-api test-web
 
 test-api:
     @echo "==> API tests (pytest)"
     cd "{{api_dir}}" && .venv/bin/pytest
 
+test-web:
+    @echo "==> Web tests (vitest)"
+    npm run test --workspace @acadian/web-client
+
+# Lint Python (ruff) and the frontend (oxlint).
 lint:
-  @echo 'WARNING: No lint scripts have been implemented yet.'
+    @echo "==> Linting API (ruff)"
+    cd "{{api_dir}}" && .venv/bin/ruff check .
+    @echo "==> Linting web client (oxlint)"
+    npm run lint --workspace @acadian/web-client
 
+# Format Python with ruff.
 format:
-  @echo 'WARNING: No format scripts have been implemented yet.'
+    cd "{{api_dir}}" && .venv/bin/ruff format .
 
-ci:
-  @echo 'WARNING: No CI scripts have been implemented yet.'
+# Full CI pipeline: lint, build the SDK, and run every test suite.
+ci: lint build-sdk test-all
+    @echo
+    @echo "CI checks passed."
+
+# ----------------------------------------------------------------------------
+# Housekeeping
+# ----------------------------------------------------------------------------
+
+# Remove build artifacts and caches (keeps installed dependencies).
+clean:
+    rm -rf "{{sdk_dir}}/dist" "{{web_dir}}/dist"
+    find "{{api_dir}}" -type d -name __pycache__ -prune -exec rm -rf {} +
+    rm -rf "{{api_dir}}/.pytest_cache" "{{api_dir}}/.ruff_cache" "{{api_dir}}/.coverage"

@@ -23,6 +23,7 @@ def compute_daily_returns(close_prices: pd.DataFrame) -> pd.DataFrame:
     """
     return close_prices.sort_index().pct_change(fill_method=None)
 
+
 # Trim returns to [start, end] and shape the response.
 # Days without a return (leading NaN or missing data) are left out of a ticker's series, but every requested ticker is still present as a key.
 def build_returns_payload(

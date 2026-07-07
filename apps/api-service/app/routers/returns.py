@@ -16,6 +16,7 @@ from ..service import ReturnsService
 
 router = APIRouter(tags=["returns"])
 
+
 # Return each MAG7 ticker's daily percentage returns over [start, end].
 @router.get(
     "/returns",

@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Cancel superseded runs on the same ref.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .tool-versions
+          cache: npm
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: .tool-versions
+
+      - name: Set up just
+        uses: extractions/setup-just@v2
+
+      - name: Install dependencies + build SDK
+        run: just setup
+
+      - name: Lint (ruff + oxlint)
+        run: just lint
+
+      - name: Run all tests (pytest + vitest)
+        run: just test-all
+
+      - name: Build web client (type-check + bundle)
+        run: just build-web

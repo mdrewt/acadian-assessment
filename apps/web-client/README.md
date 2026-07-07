@@ -1,32 +1,61 @@
-# React + TypeScript + Vite
+# Web Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+React + TypeScript frontend for the MAG7 Daily Returns app. Built with Vite,
+Redux Toolkit (RTK Query), Tailwind CSS v4, and Recharts.
 
-Currently, two official plugins are available:
+## Running
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+From the repo root: `just develop-web` starts Vite on http://localhost:5173.
+Directly:
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm run dev        # dev server
+npm run build      # type-check (tsc) + production bundle
+npm run test       # vitest
+npm run lint       # oxlint
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+The dev server expects the API at http://localhost:8000. Override that with
+`VITE_API_URL` (copy `.env.example` to `.env`). The client imports the generated
+`@acadian/sdk`, so build it first with `just build-sdk` (or `just setup`, which
+does everything).
+
+## Structure
+
+```text
+src/
+├── main.tsx                 # bootstrap: configure the SDK, mount the Redux <Provider>
+├── App.tsx                  # layout plus loading/error/empty states
+├── config.ts                # API base URL from VITE_API_URL
+├── constants.ts             # MAG7 tickers, display names, chart colours
+├── app/
+│   ├── store.ts             # Redux store (RTK Query + date-range slice)
+│   └── hooks.ts             # typed useAppDispatch / useAppSelector
+├── features/
+│   ├── dateRange/           # selected start/end date state
+│   └── returns/             # RTK Query API backed by the SDK
+├── lib/                     # pure helpers: stats, dates, formatting, theme hook
+└── components/              # DateRangeControls, SummaryTable, TickerGrid,
+                             #   TickerCard, ReturnsChart, ErrorBanner, LoadingState
+```
+
+## Data layer
+
+`features/returns/returnsApi.ts` wraps the generated SDK's `getReturns` in an
+RTK Query base query. That gets us response caching (keyed by the
+`{ start, end }` range), request de-duplication, and cancellation of superseded
+requests via the abort signal, so changing the date range quickly only ever
+renders the latest response. The summary stats (min, max, mean, volatility,
+cumulative) are computed on the client in `lib/stats.ts` from the `/returns`
+payload.
+
+## Testing
+
+vitest + Testing Library (jsdom), covering the parts with real logic:
+
+- `lib/stats.test.ts`: the summary statistics, including compounding and volatility.
+- `lib/dates.test.ts`: timezone-safe ISO date handling.
+- `features/returns/returnsApi.test.ts`: the SDK-backed base query: success,
+  error-envelope mapping, 422 flattening, and network failures.
+- `components/SummaryTable.test.tsx`: per-ticker rendering and column sorting.
+- `components/TickerCard.test.tsx`: stats rendering, chart mounting, empty state.
