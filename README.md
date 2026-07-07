@@ -42,20 +42,20 @@ Run `just setup` in the root of the project, the `just` taskrunner will run the 
   * [x] Setup, Dev, and Deployment script wired up for the frontend.
   * [x] Backend spun up with Python, FastAPI, and Pydantic.
   * [x] Setup, Dev, and Deployment script wired up for the backend.
-* [ ] Install and setup the `yfinance` python module.
+* [x] Install and setup the `yfinance` python module.
   * [x] Ensure it can fetch the information required to calculate daily returns.
-  * [ ] Create pydantic types for the fetched data.
-  * [ ] Build unit tests for for the yfinance service with mock data.
-* [ ] Setup an endpoint to fetch the daily returns of the MAG7 symbols.
-  * [ ] `/returns` Endpoint exists.
-    * [ ] Build tests for endpoint first (TDD).
-  * [ ] Takes a start date called `start` and an end date called `end` as query params.
-  * [ ] Fetches data from yfinance.
-    * [ ] Potential Improvement: Caching previously fetched historical data. (Must decide how the cache should be invalidated)
-  * [ ] Calculates daily returns for each day, for each ticker in MAG7
-    * [ ] Build tests for calculation module first (TDD).
-    * [ ] Question: What should we use as the start/end values for each day? The NYSE opening/closing prices, prices at midnight of each day, or closing price vs previous day's closing price? Should we only count business days and exclude weekends + NYSE holidays?
-  * [ ] Ensure the backend handles errors gracefully.
+  * [x] Create pydantic types for the fetched data.
+  * [x] Build unit tests for for the yfinance service with mock data.
+* [x] Setup an endpoint to fetch the daily returns of the MAG7 symbols.
+  * [x] `/returns` Endpoint exists.
+    * [x] Build tests for endpoint first (TDD).
+  * [x] Takes a start date called `start` and an end date called `end` as query params.
+  * [x] Fetches data from yfinance.
+    * [x] Potential Improvement: Caching previously fetched historical data. (Must decide how the cache should be invalidated)
+  * [x] Calculates daily returns for each day, for each ticker in MAG7
+    * [x] Build tests for calculation module first (TDD).
+    * [x] Question: What should we use as the start/end values for each day? The NYSE opening/closing prices, prices at midnight of each day, or closing price vs previous day's closing price? Should we only count business days and exclude weekends + NYSE holidays?
+  * [x] Ensure the backend handles errors gracefully.
 * [ ] Take the API's swagger (openAPI) docs and build a type-aware SDK that the frontend can use.
 * [ ] Create a React component that displays a line chart of daily returns over time.
   * [ ] Ccreated the component and wired up to the redux data store.

@@ -1,0 +1,30 @@
+[project]
+name = "mag7-returns-api"
+version = "1.0.0"
+description = "FastAPI service serving daily returns for the MAG7 stocks."
+requires-python = ">=3.14"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+filterwarnings = [
+    # Treat warnings as errors so regressions surface, with a narrow exception
+    # for Starlette's TestClient still importing httpx (benign until httpx2).
+    "error",
+    "ignore:Using `httpx` with `starlette.testclient` is deprecated",
+]
+
+[tool.coverage.run]
+source = ["app"]
+
+[tool.coverage.report]
+show_missing = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+src = ["app", "tests"]
+
+[tool.ruff.lint]
+# A pragmatic, high-signal rule set.
+select = ["E", "F", "I", "UP", "B", "SIM", "C4", "RUF"]

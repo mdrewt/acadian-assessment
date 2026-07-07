@@ -1,16 +1,32 @@
+# MAG7 Daily Returns - monorepo task runner.
+# Run `just` (or `just --list`) to see all available recipes.
+
+set shell := ["bash", "-euo", "pipefail", "-c"]
+
+api_dir := "apps/api-service"
+web_dir := "apps/web-client"
+sdk_dir := "libs/sdk"
+venv := api_dir / ".venv"
+venv_bin := venv / "bin"
+openapi_json := sdk_dir / "openapi.json"
+
+# List available recipes (default).
+default:
+    @just --list
+
 # Setup the development environment by installing all required dependencies for both the frontend web client and the backend API service.
-setup:
+setup: install-py
   @echo "--------------------------------------------------"
   @echo "Installing NPM packages for the frontend web client"
   @echo "--------------------------------------------------"
   @cd apps/web-client && npm install
 
-  @echo "\n--------------------------------------------------"
-  @echo "Installing pip modules for the backend API service"
-  @echo "--------------------------------------------------\n"
-  . ./apps/api-service/.venv/bin/activate
-  @cd apps/api-service && pip install -r requirements.txt
-  @echo "\nTODO: Install and run an OpenAPI Generator to build the SDK"
+# Create the Python virtualenv (if needed) and install API dependencies.
+install-py:
+    @echo "==> Installing Python API dependencies"
+    [ -d "{{venv}}" ] || python -m venv "{{venv}}"
+    "{{venv_bin}}/python" -m pip install --quiet --upgrade pip
+    "{{venv_bin}}/pip" install --quiet -r "{{api_dir}}/requirements.txt" -r "{{api_dir}}/requirements-dev.txt"
 
 # Generate the SDK from the backend OpenAPI specification and bundle the frontend web client for deployment.
 build-sdk:
@@ -58,8 +74,12 @@ deploy-web: build-web
   @echo "\nTODO: Replace 'dev' with actual deployment commands"
   @cd apps/web-client && npm run dev
 
-test-all:
-  @echo 'WARNING: No test scripts have been implemented yet.'
+# Run all test suites.
+test-all: test-api
+
+test-api:
+    @echo "==> API tests (pytest)"
+    cd "{{api_dir}}" && .venv/bin/pytest
 
 lint:
   @echo 'WARNING: No lint scripts have been implemented yet.'
